@@ -1,4 +1,4 @@
-package business
+package cba
 
 const (
 	COST_TYPE_LABOR      = "labor"

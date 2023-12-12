@@ -1,0 +1,23 @@
+= Analisi economico-finanziaria
+
+Le **risorse esterne** sono beni e servizi da acquistare all'esterno tramite impegno di _budget_; gli elementi di costo sono riconducibili a:
+
+* servizi forniti da risorse umane (ad esempio l'assistenza specialistica);
+* gli investimenti per l'acquisto di risorse (ad esempio hardware e software);
+* consulenze;
+* altri beni e servizi specifici.
+
+Le **risorse interne** sono beni e servizi già disponibili e necessarie; gli elementi di costo sono riconducibili a:
+
+* servizi forniti da risorse umane interne, distinguendo tra risorse di business e risorse del comparto informatico;
+* altri costi diretti relativi a beni e servizi generici;
+* costi allocati (ad esempio hardware e software già presenti).
+
+I **costi indiretti** (o _overhead costs_) si riferiscono a servizi comuni e disponibili, generalmente proporzionali alla stima delle risorse umane esterne e interne; gli elementi di costo sono riconducibili a:
+
+* attività segretariali (ad esempio il supporto per il _procurement_);
+* attività strumentali (ad esempio la gestione degli immobili, la logistica, etc.).
+
+[COLS=""]
+|===
+|===
