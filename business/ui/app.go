@@ -1,112 +1,73 @@
 package ui
 
+/*
+https://github.com/rivo/tview/wiki/Table
+https://gist.github.com/rivo/2893c6740a6c651f685b9766d1898084
+https://github.com/rivo/tview/wiki/Postgres
+https://github.com/rivo/tview/wiki
+https://github.com/destinmoulton/pixi/blob/master/gui/gui.go
+https://github.com/rivo/tview
+*/
 import (
-	"fmt"
-	"log"
-
-	"fyne.io/fyne/v2"
-	"fyne.io/fyne/v2/app"
-	"fyne.io/fyne/v2/container"
-	"fyne.io/fyne/v2/theme"
-	"fyne.io/fyne/v2/widget"
 	"github.com/LosAngeles971/cba-tool/business/cba"
+	"github.com/gdamore/tcell/v2"
+	"github.com/rivo/tview"
 )
 
 type CBAToolApp struct {
 	Data *cba.CBA
-	mainWindow fyne.Window
+	app *tview.Application
+	mainMenu *tview.List
+	pages *tview.Pages
+	cyclesPage *tview.Table
 }
 
-func getTableLabel() *widget.Label {
-	l := widget.NewLabel("wide content")
-	l.Truncation = fyne.TextTruncateClip
-	return l
+func (a *CBAToolApp) eventHandler(eventKey *tcell.EventKey) *tcell.EventKey {
+	if eventKey.Rune() == 'q' {
+		a.app.Stop()
+		return nil
+	}
+	return eventKey
 }
 
-func (a *CBAToolApp) getCyclesTab() *widget.Table {
-	table := widget.NewTable(
-		func() (int, int) {
-			return len(a.Data.Cycles) + 1, 2
-		},
-		func() fyne.CanvasObject {
-			return getTableLabel()
-		},
-		func(i widget.TableCellID, o fyne.CanvasObject) {
-			label := o.(*widget.Label)
-			if i.Row < 1 {
-				label.TextStyle = fyne.TextStyle{Bold: true}
-				if i.Col == 0 {
-					label.SetText("Index")
-				} else {
-					label.SetText("Phase")	
-				}
-			} else {
-				cycle := a.Data.Cycles[i.Row - 1]
-				if i.Col == 0 {
-					label.SetText(fmt.Sprint(cycle.Index))
-				} else {
-					label.SetText(cycle.Name)	
-				}
-			}
-		})
-	table.SetColumnWidth(0, widget.NewLabel("Index 999").MinSize().Width)
-	table.SetColumnWidth(1, widget.NewLabel("Year number 1").MinSize().Width)
-	return table
+func (a *CBAToolApp) buildMainMenu() {
+	a.mainMenu = tview.NewList().ShowSecondaryText(false)
+	a.mainMenu.SetBorder(true).SetTitle("Main menù")
+	a.mainMenu.AddItem("Load project", "Load", 'L', nil)
+	a.mainMenu.AddItem("Save project", "Save", 'S', nil)
+	a.mainMenu.AddItem("Quit", "Quit", 'Q', nil)
+	a.mainMenu.AddItem("Cycles", "Cycles", 'C', a.mainMenuCycles)
 }
 
-func (a *CBAToolApp) getCostsTab() *widget.Table {
-	return widget.NewTable(
-		func() (int, int) {
-			return len(a.Data.Costs), 5
-		},
-		func() fyne.CanvasObject {
-			return getTableLabel()
-		},
-		func(i widget.TableCellID, o fyne.CanvasObject) {
-			cost := a.Data.Costs[i.Row]
-			switch i.Col {
-			case 0:
-				o.(*widget.Label).SetText(fmt.Sprint(cost.Name))
-			case 1:
-				o.(*widget.Label).SetText(fmt.Sprint(cost.Amount))
-			case 2:
-				o.(*widget.Label).SetText(fmt.Sprint(cost.Type))
-			case 3:
-				o.(*widget.Label).SetText(fmt.Sprint(cost.External))
-			case 4:
-				o.(*widget.Label).SetText(fmt.Sprint(cost.Description))
-			}
-		})
+func (a *CBAToolApp) buildCyclesPage() {
+	a.cyclesPage = tview.NewTable().SetBorders(true)
+	a.cyclesPage.SetBorder(true).SetTitle("Project's cycles")
+	color := tcell.ColorWhite
+	a.cyclesPage.SetCell(0, 0, tview.NewTableCell("Index").SetTextColor(color).SetAlign(tview.AlignCenter))
+	a.cyclesPage.SetCell(0, 1, tview.NewTableCell("Phase").SetTextColor(color).SetAlign(tview.AlignCenter))
 }
 
-func (a *CBAToolApp) Build() {
-	mainApp := app.New()
-	a.mainWindow = mainApp.NewWindow("CBA tool - LosAngeles971@2023")
-	a.mainWindow.Resize(fyne.NewSize(1000, 640))
-	tabs := container.NewAppTabs(
-		container.NewTabItem("Cycles", a.getCyclesTab()),
-		container.NewTabItem("Discounts", widget.NewLabel("World!")),
-		container.NewTabItem("Costs", a.getCostsTab()),
-		container.NewTabItem("Allocations", widget.NewLabel("World!")),
-	)
-	tabs.SetTabLocation(container.TabLocationLeading)
-	toolbar := widget.NewToolbar(
-		widget.NewToolbarAction(theme.DocumentCreateIcon(), func() {
-			log.Println("New document")
-		}),
-		widget.NewToolbarSeparator(),
-		widget.NewToolbarAction(theme.ContentCutIcon(), func() {}),
-		widget.NewToolbarAction(theme.ContentCopyIcon(), func() {}),
-		widget.NewToolbarAction(theme.ContentPasteIcon(), func() {}),
-		widget.NewToolbarSpacer(),
-		widget.NewToolbarAction(theme.HelpIcon(), func() {
-			log.Println("Display help")
-		}),
-	)
-	border := container.NewBorder(toolbar, nil, nil, nil, tabs)
-	a.mainWindow.SetContent(border)
+func Build() *CBAToolApp {
+	cbaApp := &CBAToolApp{}
+	cbaApp.app = tview.NewApplication()
+	cbaApp.app.EnableMouse(true)
+
+	cbaApp.buildMainMenu()
+	cbaApp.buildCyclesPage()
+
+	cbaApp.pages = tview.NewPages()
+	cbaApp.pages.AddPage("cycles", cbaApp.cyclesPage, true, true)
+
+	flex := tview.NewFlex().AddItem(cbaApp.mainMenu, 0, 1, true)
+	flex.AddItem(cbaApp.pages, 0, 3, false)
+
+	cbaApp.app.SetInputCapture(cbaApp.eventHandler)
+	cbaApp.app.SetRoot(flex, true)
+	cbaApp.app.SetFocus(cbaApp.mainMenu)
+
+	return cbaApp
 }
 
-func (a *CBAToolApp) Run() {
-	a.mainWindow.ShowAndRun()
+func (a *CBAToolApp) Run() error {
+	return a.app.Run()
 }
