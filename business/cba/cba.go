@@ -18,6 +18,7 @@ type Cost struct {
 	Description string   `json:"description" yaml:"description"`
 	Type        string   `json:"type" yaml:"type"`
 	Amount      float64  `json:"amount" yaml:"amount"`
+	Currency    string   `json:"currency" yaml:"currency"`
 	Tags        []string `json:"tags" yaml:"tags"`
 	External    bool     `json:"external" yaml:"external"`
 }

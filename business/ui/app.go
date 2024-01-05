@@ -14,37 +14,29 @@ import (
 	"github.com/rivo/tview"
 )
 
+const (
+	page_cycles      = "cycles"
+	page_costs       = "costs"
+	page_allocations = "allocations"
+)
+
 type CBAToolApp struct {
-	Data *cba.CBA
-	app *tview.Application
-	mainMenu *tview.List
-	pages *tview.Pages
-	cyclesPage *tview.Table
+	Data            *cba.CBA
+	app             *tview.Application
+	mainMenu        *tview.List
+	pages           *tview.Pages
+	cyclesPage      *tview.Table
+	costsPage       *tview.Table
+	allocationsPage *tview.Table
+	layout          *tview.Flex
 }
 
 func (a *CBAToolApp) eventHandler(eventKey *tcell.EventKey) *tcell.EventKey {
-	if eventKey.Rune() == 'q' {
-		a.app.Stop()
-		return nil
+	if eventKey.Key() == tcell.KeyEscape {
+		a.app.SetRoot(a.layout, true)
+		a.app.SetFocus(a.mainMenu)
 	}
 	return eventKey
-}
-
-func (a *CBAToolApp) buildMainMenu() {
-	a.mainMenu = tview.NewList().ShowSecondaryText(false)
-	a.mainMenu.SetBorder(true).SetTitle("Main menù")
-	a.mainMenu.AddItem("Load project", "Load", 'L', nil)
-	a.mainMenu.AddItem("Save project", "Save", 'S', nil)
-	a.mainMenu.AddItem("Quit", "Quit", 'Q', nil)
-	a.mainMenu.AddItem("Cycles", "Cycles", 'C', a.mainMenuCycles)
-}
-
-func (a *CBAToolApp) buildCyclesPage() {
-	a.cyclesPage = tview.NewTable().SetBorders(true)
-	a.cyclesPage.SetBorder(true).SetTitle("Project's cycles")
-	color := tcell.ColorWhite
-	a.cyclesPage.SetCell(0, 0, tview.NewTableCell("Index").SetTextColor(color).SetAlign(tview.AlignCenter))
-	a.cyclesPage.SetCell(0, 1, tview.NewTableCell("Phase").SetTextColor(color).SetAlign(tview.AlignCenter))
 }
 
 func Build() *CBAToolApp {
@@ -54,15 +46,19 @@ func Build() *CBAToolApp {
 
 	cbaApp.buildMainMenu()
 	cbaApp.buildCyclesPage()
+	cbaApp.buildCostPage()
+	cbaApp.buildAllocationsPage()
 
 	cbaApp.pages = tview.NewPages()
-	cbaApp.pages.AddPage("cycles", cbaApp.cyclesPage, true, true)
+	cbaApp.pages.AddPage(page_cycles, cbaApp.cyclesPage, true, true)
+	cbaApp.pages.AddPage(page_costs, cbaApp.costsPage, true, false)
+	cbaApp.pages.AddPage(page_allocations, cbaApp.allocationsPage, true, false)
 
-	flex := tview.NewFlex().AddItem(cbaApp.mainMenu, 0, 1, true)
-	flex.AddItem(cbaApp.pages, 0, 3, false)
+	cbaApp.layout = tview.NewFlex().AddItem(cbaApp.mainMenu, 0, 1, true)
+	cbaApp.layout.AddItem(cbaApp.pages, 0, 3, false)
 
 	cbaApp.app.SetInputCapture(cbaApp.eventHandler)
-	cbaApp.app.SetRoot(flex, true)
+	cbaApp.app.SetRoot(cbaApp.layout, true)
 	cbaApp.app.SetFocus(cbaApp.mainMenu)
 
 	return cbaApp

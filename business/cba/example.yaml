@@ -18,6 +18,7 @@
       description: Virtualization suite of VMware - yearly cost per user
       type: investment
       amount: 270
+      currency: euro
       tags:
         - Software
       external: true
@@ -25,6 +26,7 @@
       description: Server per virtualization suite of VMware - fixed cost per 1 server
       type: investment
       amount: 15000
+      currency: euro
       tags:
         - Hardware
       external: true
@@ -32,6 +34,7 @@
       description: Internal FTE expert role
       type: labor
       amount: 100000
+      currency: euro
       tags:
         - Internal
       external: false
