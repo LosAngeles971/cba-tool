@@ -61,7 +61,7 @@ func (a *CBAToolApp) getPhaseForm(phase *cba.Phase, update bool) *tview.Form {
 	if update {
 		form.AddButton("Delete", func() {
 			a.Data.DeletePhaseByIndex(phase.Index)
-			a.updateCostsPage()
+			//a.updateCostsPage()
 			a.app.SetFocus(a.costsPage)
 			a.app.SetRoot(a.layout, true)
 		})

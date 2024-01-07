@@ -10,7 +10,7 @@ import (
 )
 
 // Show a navigable tree view of the current directory.
-func (a *CBAToolApp) getBrowserPage(rootDir string) *tview.TreeView {
+func (a *CBAToolApp) callBrowserPage(rootDir string) *tview.TreeView {
 	//rootDir := "."
 	root := tview.NewTreeNode(rootDir).SetColor(tcell.ColorRed)
 	tree := tview.NewTreeView().SetRoot(root).SetCurrentNode(root)

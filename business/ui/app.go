@@ -29,14 +29,12 @@ type CBAToolApp struct {
 	cyclesPage      *tview.Table
 	costsPage       *tview.Table
 	allocationsPage *tview.Table
-	reportPage      *tview.Table
 	layout          *tview.Flex
 }
 
 func (a *CBAToolApp) eventHandler(eventKey *tcell.EventKey) *tcell.EventKey {
 	if eventKey.Key() == tcell.KeyEscape {
-		a.app.SetRoot(a.layout, true)
-		a.app.SetFocus(a.mainMenu)
+		a.callMenuPage()
 	}
 	return eventKey
 }
@@ -48,25 +46,23 @@ func Build() *CBAToolApp {
 	cbaApp.app = tview.NewApplication()
 	cbaApp.app.EnableMouse(true)
 
-	cbaApp.buildMainMenu()
+	//cbaApp.buildMainMenu()
 	cbaApp.buildCyclesPage()
 	cbaApp.buildCostPage()
 	cbaApp.buildAllocationsPage()
-	cbaApp.buildReportPage()
 
 	cbaApp.pages = tview.NewPages()
 	cbaApp.pages.AddPage(page_cycles, cbaApp.cyclesPage, true, true)
 	cbaApp.pages.AddPage(page_costs, cbaApp.costsPage, true, false)
 	cbaApp.pages.AddPage(page_allocations, cbaApp.allocationsPage, true, false)
-	cbaApp.pages.AddPage(page_report, cbaApp.reportPage, true, false)
 
 	cbaApp.layout = tview.NewFlex().AddItem(cbaApp.mainMenu, 0, 1, true)
 	cbaApp.layout.AddItem(cbaApp.pages, 0, 3, false)
 
 	cbaApp.app.SetInputCapture(cbaApp.eventHandler)
-	cbaApp.app.SetRoot(cbaApp.layout, true)
-	cbaApp.app.SetFocus(cbaApp.mainMenu)
-
+	// cbaApp.app.SetRoot(cbaApp.layout, true)
+	// cbaApp.app.SetFocus(cbaApp.mainMenu)
+	cbaApp.callMenuPage()
 	return cbaApp
 }
 
