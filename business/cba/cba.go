@@ -62,9 +62,10 @@ func (cba *CBA) Load(data []byte) {
 	cba.sortPhases()
 }
 
-func (cba *CBA) LoadFile(path string) {
+func (cba *CBA) LoadFile(path string) error {
 	data, err := os.ReadFile(path)
-	if err == nil {
+	if err != nil {
 		cba.Load(data)
 	}
+	return err
 }

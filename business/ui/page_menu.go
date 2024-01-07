@@ -11,17 +11,6 @@ var about_text string
 //go:embed help.txt
 var help_text string
 
-func (a *CBAToolApp) callQuit() {
-	modal := tview.NewModal().SetText("Do you want to quit the application?").AddButtons([]string{"Quit", "Cancel"}).SetDoneFunc(func(buttonIndex int, buttonLabel string) {
-		if buttonLabel == "Quit" {
-			a.app.Stop()
-		} else {
-			a.callMenuPage()
-		}
-	})
-	a.app.SetRoot(modal, true)
-}
-
 func (a *CBAToolApp) callMenuPage() {
 	flex := tview.NewFlex()
 	help := tview.NewTextView()
@@ -39,7 +28,9 @@ func (a *CBAToolApp) callMenuPage() {
 	mainMenu.AddItem("Help", "", ' ', func() {
 		help.SetText(help_text)
 	})
-	mainMenu.AddItem("Load project", "", 'L', nil) // a.app.SetRoot(a.callBrowserPage("."), true)
+	mainMenu.AddItem("Load project", "", 'L', func() {
+		a.callBrowserPage()
+	})
 	mainMenu.AddItem("Save project", "", 'S', nil)
 	mainMenu.AddItem("Quit", "", 'Q', func() {
 		a.callQuit()

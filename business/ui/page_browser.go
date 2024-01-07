@@ -9,10 +9,11 @@ import (
 	"github.com/rivo/tview"
 )
 
+var currentDir = "."
+
 // Show a navigable tree view of the current directory.
-func (a *CBAToolApp) callBrowserPage(rootDir string) *tview.TreeView {
-	//rootDir := "."
-	root := tview.NewTreeNode(rootDir).SetColor(tcell.ColorRed)
+func (a *CBAToolApp) callBrowserPage() {
+	root := tview.NewTreeNode(currentDir).SetColor(tcell.ColorRed)
 	tree := tview.NewTreeView().SetRoot(root).SetCurrentNode(root)
 
 	// A helper function which adds the files and directories of the given path 
@@ -32,7 +33,7 @@ func (a *CBAToolApp) callBrowserPage(rootDir string) *tview.TreeView {
 	}
 
 	// Add the current directory to the root node.
-	add(root, rootDir)
+	add(root, currentDir)
 
 	// If a directory was selected, open it.
 	tree.SetSelectedFunc(func(node *tview.TreeNode) {
@@ -55,8 +56,13 @@ func (a *CBAToolApp) callBrowserPage(rootDir string) *tview.TreeView {
 				node.SetExpanded(!node.IsExpanded())
 			}
 		} else {
-			a.callMenuPage()
+			err := a.Data.LoadFile(path)
+			if err != nil {
+				a.callErrorMessage(err)
+			} else {
+				a.callMenuPage()
+			}
 		}
 	})
-	return tree
+	a.app.SetRoot(tree, true)
 }
