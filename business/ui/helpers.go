@@ -7,11 +7,6 @@ import (
 	"github.com/rivo/tview"
 )
 
-func (a *CBAToolApp) backToMainMenu() {
-	a.app.SetFocus(a.mainMenu)
-	a.app.SetRoot(a.layout, true)
-}
-
 func getInteger(f *tview.InputField) int {
 	a, err := strconv.Atoi(f.GetText())
 	if err != nil {

@@ -14,22 +14,9 @@ import (
 	"github.com/rivo/tview"
 )
 
-const (
-	page_cycles      = "cycles"
-	page_costs       = "costs"
-	page_allocations = "allocations"
-	page_report      = "report"
-)
-
 type CBAToolApp struct {
 	Data            *cba.CBA
 	app             *tview.Application
-	mainMenu        *tview.List
-	pages           *tview.Pages
-	cyclesPage      *tview.Table
-	costsPage       *tview.Table
-	allocationsPage *tview.Table
-	layout          *tview.Flex
 }
 
 func (a *CBAToolApp) eventHandler(eventKey *tcell.EventKey) *tcell.EventKey {
@@ -44,25 +31,12 @@ func Build() *CBAToolApp {
 		Data: cba.NewCBA(),
 	}
 	cbaApp.app = tview.NewApplication()
+
 	cbaApp.app.EnableMouse(true)
-
-	//cbaApp.buildMainMenu()
-	cbaApp.buildCyclesPage()
-	cbaApp.buildCostPage()
-	cbaApp.buildAllocationsPage()
-
-	cbaApp.pages = tview.NewPages()
-	cbaApp.pages.AddPage(page_cycles, cbaApp.cyclesPage, true, true)
-	cbaApp.pages.AddPage(page_costs, cbaApp.costsPage, true, false)
-	cbaApp.pages.AddPage(page_allocations, cbaApp.allocationsPage, true, false)
-
-	cbaApp.layout = tview.NewFlex().AddItem(cbaApp.mainMenu, 0, 1, true)
-	cbaApp.layout.AddItem(cbaApp.pages, 0, 3, false)
-
 	cbaApp.app.SetInputCapture(cbaApp.eventHandler)
-	// cbaApp.app.SetRoot(cbaApp.layout, true)
-	// cbaApp.app.SetFocus(cbaApp.mainMenu)
+
 	cbaApp.callMenuPage()
+
 	return cbaApp
 }
 

@@ -55,8 +55,7 @@ func (a *CBAToolApp) callBrowserPage(rootDir string) *tview.TreeView {
 				node.SetExpanded(!node.IsExpanded())
 			}
 		} else {
-			a.app.SetRoot(a.layout, true)
-			a.app.SetFocus(a.mainMenu)
+			a.callMenuPage()
 		}
 	})
 	return tree

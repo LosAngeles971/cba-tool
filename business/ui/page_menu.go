@@ -7,30 +7,53 @@ import(
 )
 
 //go:embed about.txt
-var about_test string
+var about_text string
+//go:embed help.txt
+var help_text string
+
+func (a *CBAToolApp) callQuit() {
+	modal := tview.NewModal().SetText("Do you want to quit the application?").AddButtons([]string{"Quit", "Cancel"}).SetDoneFunc(func(buttonIndex int, buttonLabel string) {
+		if buttonLabel == "Quit" {
+			a.app.Stop()
+		} else {
+			a.callMenuPage()
+		}
+	})
+	a.app.SetRoot(modal, true)
+}
 
 func (a *CBAToolApp) callMenuPage() {
 	flex := tview.NewFlex()
 	help := tview.NewTextView()
-	help.SetText(about_test)
+	help.SetText(about_text)
 	help.SetTextAlign(tview.AlignLeft)
 	help.SetTitle("Help")
 	help.SetBorder(true)
 	help.SetWordWrap(true)
+	help.SetDynamicColors(true)
 	mainMenu := tview.NewList().ShowSecondaryText(false)
 	mainMenu.SetBorder(true).SetTitle("Main menù")
 	mainMenu.AddItem("About", "", ' ', func() {
-		help.SetText(about_test)
+		help.SetText(about_text)
 	})
-	mainMenu.AddItem("Load project", "", 'L', a.loadProject)
+	mainMenu.AddItem("Help", "", ' ', func() {
+		help.SetText(help_text)
+	})
+	mainMenu.AddItem("Load project", "", 'L', nil) // a.app.SetRoot(a.callBrowserPage("."), true)
 	mainMenu.AddItem("Save project", "", 'S', nil)
-	mainMenu.AddItem("Quit", "", 'Q', a.mainMenuQuit)
+	mainMenu.AddItem("Quit", "", 'Q', func() {
+		a.callQuit()
+	})
 	mainMenu.AddItem("Settings", "", ' ', a.callUpdateSettings)
-	mainMenu.AddItem("Phases", "", ' ', a.mainMenuPhases)
+	mainMenu.AddItem("Phases", "", ' ', func() {
+		a.callPhasesPage()
+	})
 	mainMenu.AddItem("Costs", "", ' ', func() {
 		a.callCostsPage()
 	})
-	mainMenu.AddItem("Allocations", "", ' ', a.mainMenuAllocations)
+	mainMenu.AddItem("Costs allocation", "", ' ', func() {
+		a.callAllocationsPage()
+	})
 	mainMenu.AddItem("Report", "", ' ', func() {
 		a.callReportPage()
 	})

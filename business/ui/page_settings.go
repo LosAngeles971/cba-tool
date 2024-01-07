@@ -21,8 +21,8 @@ func (a *CBAToolApp) callUpdateSettings() {
 			a.Data.Currency = c
 			vat, _ := strconv.ParseFloat(form.GetFormItemByLabel("Name").(*tview.InputField).GetText(), 64)
 			a.Data.ValueAddedTax = vat
-			a.backToMainMenu()
-		}).AddButton("Cancel", a.backToMainMenu)
+			a.callMenuPage()
+		}).AddButton("Cancel", a.callMenuPage)
 	form.SetBorder(true).SetTitle("Project's settings").SetTitleAlign(tview.AlignLeft)
 	a.app.SetRoot(form, true)
 }

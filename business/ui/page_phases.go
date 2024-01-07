@@ -8,34 +8,29 @@ import (
 	"github.com/rivo/tview"
 )
 
-func (a *CBAToolApp) updateCyclesPage() {
-	color := tcell.ColorWhite
-	a.cyclesPage.Clear()
-	a.cyclesPage.SetCell(0, 0, tview.NewTableCell("Index").SetTextColor(color).SetAlign(tview.AlignCenter))
-	a.cyclesPage.SetCell(0, 1, tview.NewTableCell("Phase").SetTextColor(color).SetAlign(tview.AlignCenter))
-	a.cyclesPage.SetCell(0, 2, tview.NewTableCell("Days").SetTextColor(color).SetAlign(tview.AlignCenter))
-	if a.Data == nil {
-		return
-	}
-	for i, cycle := range a.Data.Phases {
-		a.cyclesPage.SetCell(i+1, 0, tview.NewTableCell(fmt.Sprint(cycle.Index)).SetTextColor(color).SetAlign(tview.AlignCenter))
-		a.cyclesPage.SetCell(i+1, 1, tview.NewTableCell(cycle.Name).SetTextColor(color).SetAlign(tview.AlignCenter))
-		a.cyclesPage.SetCell(i+1, 2, tview.NewTableCell(fmt.Sprint(cycle.Days)).SetTextColor(color).SetAlign(tview.AlignCenter))
-	}
-}
-
-func (a *CBAToolApp) buildCyclesPage() {
-	a.cyclesPage = tview.NewTable().SetBorders(true)
-	a.cyclesPage.SetBorder(true).SetTitle("Project's phases")
-	a.cyclesPage.SetSelectable(true, false)
-	a.cyclesPage.SetSelectedFunc(func(row int, column int) {
+func (a *CBAToolApp) callPhasesPage() {
+	phasesPage := tview.NewTable().SetBorders(true)
+	phasesPage.SetBorder(true).SetTitle("Phases")
+	phasesPage.SetSelectable(true, false)
+	phasesPage.SetSelectedFunc(func(row int, column int) {
 		if row < 1 {
-			a.addNewPhase()
+			a.callAddNewPhase()
 		} else {
-			a.updatePhase(a.Data.Phases[row-1].Index)
+			a.callUpdatePhase(a.Data.Phases[row-1].Index)
 		}
 	})
-	a.updateCyclesPage()
+	phasesPage.Clear()
+	phasesPage.SetCell(0, 0, tview.NewTableCell("Index").SetTextColor(tcell.ColorWhite).SetAlign(tview.AlignCenter))
+	phasesPage.SetCell(0, 1, tview.NewTableCell("Phase").SetTextColor(tcell.ColorWhite).SetAlign(tview.AlignCenter))
+	phasesPage.SetCell(0, 2, tview.NewTableCell("Days").SetTextColor(tcell.ColorWhite).SetAlign(tview.AlignCenter))
+	if a.Data != nil {
+		for i, cycle := range a.Data.Phases {
+			phasesPage.SetCell(i+1, 0, tview.NewTableCell(fmt.Sprint(cycle.Index)).SetTextColor(tcell.ColorWhite).SetAlign(tview.AlignCenter))
+			phasesPage.SetCell(i+1, 1, tview.NewTableCell(cycle.Name).SetTextColor(tcell.ColorWhite).SetAlign(tview.AlignCenter))
+			phasesPage.SetCell(i+1, 2, tview.NewTableCell(fmt.Sprint(cycle.Days)).SetTextColor(tcell.ColorWhite).SetAlign(tview.AlignCenter))
+		}
+	}
+	a.app.SetRoot(phasesPage, true)
 }
 
 func (a *CBAToolApp) getPhaseForm(phase *cba.Phase, update bool) *tview.Form {
@@ -50,26 +45,21 @@ func (a *CBAToolApp) getPhaseForm(phase *cba.Phase, update bool) *tview.Form {
 		if !update {
 			a.Data.Phases = append(a.Data.Phases, phase)
 		}
-		a.updateAllocationsPage()
-		a.app.SetFocus(a.allocationsPage)
-		a.app.SetRoot(a.layout, true)
+		a.callPhasesPage()
 	})
 	form.AddButton("Cancel", func() {
-		a.app.SetFocus(a.costsPage)
-		a.app.SetRoot(a.layout, true)
+		a.callPhasesPage()
 	})
 	if update {
 		form.AddButton("Delete", func() {
 			a.Data.DeletePhaseByIndex(phase.Index)
-			//a.updateCostsPage()
-			a.app.SetFocus(a.costsPage)
-			a.app.SetRoot(a.layout, true)
+			a.callPhasesPage()
 		})
 	}
 	return form
 }
 
-func (a *CBAToolApp) updatePhase(i int) {
+func (a *CBAToolApp) callUpdatePhase(i int) {
 	phase := a.Data.FindPhaseByIndex(i)
 	if phase == nil {
 		return
@@ -79,7 +69,7 @@ func (a *CBAToolApp) updatePhase(i int) {
 	a.app.SetRoot(form, true)
 }
 
-func (a *CBAToolApp) addNewPhase() {
+func (a *CBAToolApp) callAddNewPhase() {
 	phase := a.Data.NewPhase()
 	form := a.getPhaseForm(phase, false)
 	form.SetBorder(true).SetTitle("Enter new project's phase").SetTitleAlign(tview.AlignLeft)

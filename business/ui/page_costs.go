@@ -25,14 +25,13 @@ func (a *CBAToolApp) callCostsPage() {
 	costsPage.SetCell(0, 1, tview.NewTableCell("Type").SetTextColor(tcell.ColorWhite).SetAlign(tview.AlignCenter))
 	costsPage.SetCell(0, 2, tview.NewTableCell("Amount").SetTextColor(tcell.ColorWhite).SetAlign(tview.AlignCenter))
 	costsPage.SetCell(0, 3, tview.NewTableCell("External").SetTextColor(tcell.ColorWhite).SetAlign(tview.AlignCenter))
-	if a.Data == nil {
-		return
-	}
-	for i, cost := range a.Data.Costs {
-		costsPage.SetCell(i+1, 0, tview.NewTableCell(cost.Name).SetTextColor(tcell.ColorWhite).SetAlign(tview.AlignCenter))
-		costsPage.SetCell(i+1, 1, tview.NewTableCell(cost.Type).SetTextColor(tcell.ColorWhite).SetAlign(tview.AlignCenter))
-		costsPage.SetCell(i+1, 2, tview.NewTableCell(fmt.Sprintf("%f %s", cost.Amount, cost.Currency)).SetTextColor(tcell.ColorWhite).SetAlign(tview.AlignCenter))
-		costsPage.SetCell(i+1, 3, tview.NewTableCell(fmt.Sprint(cost.External)).SetTextColor(tcell.ColorWhite).SetAlign(tview.AlignCenter))
+	if a.Data != nil {
+		for i, cost := range a.Data.Costs {
+			costsPage.SetCell(i+1, 0, tview.NewTableCell(cost.Name).SetTextColor(tcell.ColorWhite).SetAlign(tview.AlignCenter))
+			costsPage.SetCell(i+1, 1, tview.NewTableCell(cost.Type).SetTextColor(tcell.ColorWhite).SetAlign(tview.AlignCenter))
+			costsPage.SetCell(i+1, 2, tview.NewTableCell(fmt.Sprintf("%f %s", cost.Amount, cost.Currency)).SetTextColor(tcell.ColorWhite).SetAlign(tview.AlignCenter))
+			costsPage.SetCell(i+1, 3, tview.NewTableCell(fmt.Sprint(cost.External)).SetTextColor(tcell.ColorWhite).SetAlign(tview.AlignCenter))
+		}
 	}
 	a.app.SetRoot(costsPage, true)
 }
