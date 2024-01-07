@@ -1,10 +1,21 @@
 package cba
 
+import (
+	_ "embed"
+	"os"
+	"sort"
+
+	"gopkg.in/yaml.v3"
+)
+
+//go:embed example.yaml
+var example []byte
+
 const (
-	COST_TYPE_LABOR      = "labor"
-	COST_TYPE_INVESTMENT = "investment"
-	COST_TYPE_CONSULTING = "consulting"
-	COST_TYPE_OTHERS     = "others"
+	CURRENCY_EURO          = "euro"
+	CURRENCY_DOLLAR        = "dollar"
+	CURRENCY_EURO_SYMBOL   = "€"
+	CURRENCY_DOLLAR_SYMBOL = "$"
 )
 
 type Discount struct {
@@ -13,49 +24,47 @@ type Discount struct {
 	Absolute   float64 `json:"absolute" yaml:"absolute"`
 }
 
-type Cost struct {
-	Name        string   `json:"name" yaml:"name"`
-	Description string   `json:"description" yaml:"description"`
-	Type        string   `json:"type" yaml:"type"`
-	Amount      float64  `json:"amount" yaml:"amount"`
-	Currency    string   `json:"currency" yaml:"currency"`
-	Tags        []string `json:"tags" yaml:"tags"`
-	External    bool     `json:"external" yaml:"external"`
-}
-
-type Allocation struct {
-	Cost       string  `json:"cost" yaml:"cost"`
-	Occurrence float64 `json:"occurrence" yaml:"occurrence"`
-	Cycles     []int   `json:"cycles" yaml:"cycles"`
-	Discount   string  `json:"discount" yaml:"discount"`
-}
-
-type Cycle struct {
-	Name  string `json:"name" yaml:"name"`
-	Index int    `json:"index" yaml:"index"`
-}
-
-type SubReport struct {
-	Labor         map[int]float64
-	Investment    map[int]float64
-	Consulting    map[int]float64
-	Others        map[int]float64
-	TotLabor      float64
-	TotInvestment float64
-	TotConsulting float64
-	TotOthers     float64
-}
-
-type Report struct {
-	External SubReport
-	Internal SubReport
-}
-
 type CBA struct {
-	Cycles      []Cycle      `json:"cycles" yaml:"cycles"`
-	Discounts   []Discount   `json:"discounts" yaml:"discounts"`
-	Costs       []Cost       `json:"costs" yaml:"costs"`
-	Allocations []Allocation `json:"allocations" yaml:"allocations"`
-	Currency    string       `json:"currency" yaml:"currency"`
-	Report      Report
+	Phases        []*Phase      `json:"phases" yaml:"phases"`
+	Discounts     []*Discount   `json:"discounts" yaml:"discounts"`
+	Costs         []*Cost       `json:"costs" yaml:"costs"`
+	Allocations   []*Allocation `json:"allocations" yaml:"allocations"`
+	Currency      string        `json:"currency" yaml:"currency"`
+	ValueAddedTax float64       `json:"vat" yaml:"vat"`
+	VAT           bool          `json:"vat_enable" yaml:"vat_enable"`
+}
+
+func NewCBA() *CBA {
+	cba := &CBA{
+		Phases:        []*Phase{},
+		Discounts:     []*Discount{},
+		Costs:         []*Cost{},
+		Allocations:   []*Allocation{},
+		Currency:      CURRENCY_EURO,
+		ValueAddedTax: 0,
+		VAT:           false,
+	}
+	cba.Load(example)
+	return cba
+}
+
+func (cba *CBA) sortPhases() {
+	sort.Slice(cba.Phases, func(i, j int) bool {
+		return cba.Phases[i].Index < cba.Phases[j].Index
+	})
+}
+
+func (cba *CBA) Load(data []byte) {
+	err := yaml.Unmarshal(data, cba)
+	if err != nil {
+		panic(err)
+	}
+	cba.sortPhases()
+}
+
+func (cba *CBA) LoadFile(path string) {
+	data, err := os.ReadFile(path)
+	if err == nil {
+		cba.Load(data)
+	}
 }

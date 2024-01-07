@@ -8,10 +8,10 @@ import(
 )
 
 //go:embed example.yaml
-var example []byte
+var test_project []byte
 
-func TestCalc(t *testing.T) {
-	cba := NewCBA(example)
-	cba.Calc()
+func TestCBALoad(t *testing.T) {
+	cba := NewCBA()
+	cba.Load(test_project)
 	require.Equal(t, "EUR", cba.Currency)
 }

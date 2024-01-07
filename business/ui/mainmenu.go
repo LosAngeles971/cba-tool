@@ -3,12 +3,8 @@ package ui
 import (
 	_ "embed"
 
-	"github.com/LosAngeles971/cba-tool/business/cba"
 	"github.com/rivo/tview"
 )
-
-//go:embed example.yaml
-var example []byte
 
 func (a *CBAToolApp) mainMenuQuit() {
 	modal := tview.NewModal().SetText("Do you want to quit the application?").AddButtons([]string{"Quit", "Cancel"}).SetDoneFunc(func(buttonIndex int, buttonLabel string) {
@@ -21,27 +17,34 @@ func (a *CBAToolApp) mainMenuQuit() {
 	a.app.SetRoot(modal, true)
 }
 
-func (a *CBAToolApp) mainMenuCycles() {
+func (a *CBAToolApp) mainMenuPhases() {
+	a.updateCyclesPage()
 	a.pages.SwitchToPage(page_cycles)
 	a.app.SetFocus(a.cyclesPage)
 }
 
 func (a *CBAToolApp) mainMenuCosts() {
+	a.updateCostsPage()
 	a.pages.SwitchToPage(page_costs)
 	a.app.SetFocus(a.costsPage)
 }
 
 func (a *CBAToolApp) mainMenuAllocations() {
+	a.updateAllocationsPage()
 	a.pages.SwitchToPage(page_allocations)
 	a.app.SetFocus(a.allocationsPage)
 }
 
+func (a *CBAToolApp) mainMenuReport() {
+	a.updateReportPage()
+	a.pages.SwitchToPage(page_report)
+	a.app.SetFocus(a.reportPage)
+}
+
 func (a *CBAToolApp) loadProject() {
-	a.Data = cba.NewCBA(example)
-	a.updateCyclesPage()
-	a.updateCostsPage()
-	a.updateAllocationsPage()
-	a.pages.SwitchToPage("cycles")
+	//a.Data = cba.NewCBA()
+	//a.mainMenuPhases()
+	a.app.SetRoot(a.getBrowserPage("."), true)
 }
 
 func (a *CBAToolApp) buildMainMenu() {
@@ -50,7 +53,9 @@ func (a *CBAToolApp) buildMainMenu() {
 	a.mainMenu.AddItem("Load project", "Load", 'L', a.loadProject)
 	a.mainMenu.AddItem("Save project", "Save", 'S', nil)
 	a.mainMenu.AddItem("Quit", "Quit", 'Q', a.mainMenuQuit)
-	a.mainMenu.AddItem("Cycle", "Project's cycle", ' ', a.mainMenuCycles)
+	a.mainMenu.AddItem("Project settings", "Settings", ' ', a.callUpdateSettings)
+	a.mainMenu.AddItem("Project's phases", "Project's phases", ' ', a.mainMenuPhases)
 	a.mainMenu.AddItem("Costs", "List of all costs", ' ', a.mainMenuCosts)
 	a.mainMenu.AddItem("Allocations", "Costs allocations", ' ', a.mainMenuAllocations)
+	a.mainMenu.AddItem("Report", "CBA Report", ' ', a.mainMenuReport)
 }

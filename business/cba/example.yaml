@@ -1,22 +1,21 @@
 ---
-  currency: EUR
-  cycles:
+  currency: euro
+  vat: 21
+  phases:
     - name: Realizzazione
       index: 0
+      days: 120
     - name: Anno 1
       index: 1
+      days: 365
     - name: Anno 2
       index: 2
-    - name: Anno 3
-      index: 3
-    - name: Anno 4
-      index: 4
-    - name: Anno 5
-      index: 5
+      days: 365
   costs:
     - name: VMware vSphere stack License
       description: Virtualization suite of VMware - yearly cost per user
       type: investment
+      metric: yearly
       amount: 270
       currency: euro
       tags:
@@ -25,6 +24,7 @@
     - name: Server Dell high-end
       description: Server per virtualization suite of VMware - fixed cost per 1 server
       type: investment
+      metric: once
       amount: 15000
       currency: euro
       tags:
@@ -33,24 +33,32 @@
     - name: Internal FTE expert role
       description: Internal FTE expert role
       type: labor
+      metric: yearly
       amount: 100000
       currency: euro
       tags:
         - Internal
       external: false
   allocations:
-    - cost: VMware vSphere stack License
-      occurrence: 100
-      discount:
-      cycles: [1,2,3,4,5]
-      # 27000 each cycle
-    - cost: Server Dell high-end
+    - id: "0.0"
+      cost: Server Dell high-end
       occurrence: 10
       discount:
-      cycles: [0]
+      phase: 0
       # 150000 for cycle 0
-    - cost: Internal FTE expert role
-      occurrence: 0.5
+    - id: "0.1"
+      cost: Internal FTE expert role
+      occurrence: 1
       discount:
-      cycles: [0]
-      # 50000 for cycle 0
+      phase: 0
+      # 50000 for cycle 0  
+    - id: "0"
+      cost: VMware vSphere stack License
+      occurrence: 100
+      discount:
+      phase: 1
+    - id: "2"
+      cost: VMware vSphere stack License
+      occurrence: 100
+      discount:
+      phase: 2

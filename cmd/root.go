@@ -2,10 +2,9 @@ package cmd
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 
-	"github.com/LosAngeles971/cba-tool/business"
+	"github.com/LosAngeles971/cba-tool/business/ui"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
@@ -19,8 +18,8 @@ var format string
 var filename string
 
 var rootCmd = &cobra.Command{
-	Use:   "cba",
-	Short: "cba",
+	Use:   "cba-tool",
+	Short: "Cost-Benefit Analysis tool",
 	Long:  description,
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 		if debug {
@@ -29,13 +28,10 @@ var rootCmd = &cobra.Command{
 		}
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		data, err := ioutil.ReadFile(filename)
-		if err != nil {
+		app := ui.Build()
+		if err := app.Run(); err != nil {
 			panic(err)
 		}
-		cba := business.NewCBA(data)
-		cba.Calc()
-		cba.PrintAnalysis()
 	},
 }
 
