@@ -1,6 +1,8 @@
 package ui
 
 import (
+	"fmt"
+
 	"github.com/gdamore/tcell/v2"
 	"github.com/rivo/tview"
 )
@@ -16,13 +18,18 @@ func (a *CBAToolApp) callQuit() {
 	a.app.SetRoot(modal, true)
 }
 
-func (a *CBAToolApp) callErrorMessage(e error) {
+func (a *CBAToolApp) callMessage(message string, err error, callback func()) {
 	modal := tview.NewModal()
-	modal.SetTitle("Error message")
-	modal.SetText(e.Error())
+	if err != nil {
+		modal.SetTitle("Error message")
+		modal.SetText(fmt.Sprintf("%s ( %v )", message, err))
+	} else {
+		modal.SetTitle("Message")
+		modal.SetText(message)
+	}
 	modal.AddButtons([]string{"Continue"})
 	modal.SetDoneFunc(func(buttonIndex int, buttonLabel string) {
-		a.callMenuPage()
+		callback()
 	})
 	a.app.SetRoot(modal, true)
 }

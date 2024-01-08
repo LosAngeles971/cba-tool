@@ -12,24 +12,28 @@ const (
 )
 
 type Cost struct {
-	Name     string   `json:"name" yaml:"name"`
-	Metric   string   `json:"metric" yaml:"metric"`
-	Type     string   `json:"type" yaml:"type"`
-	Amount   float64  `json:"amount" yaml:"amount"`
-	Currency string   `json:"currency" yaml:"currency"`
-	Tags     []string `json:"tags" yaml:"tags"`
-	External bool     `json:"external" yaml:"external"`
+	Name     string  `json:"name" yaml:"name"`
+	Metric   string  `json:"metric" yaml:"metric"`
+	Type     string  `json:"type" yaml:"type"`
+	Amount   float64 `json:"amount" yaml:"amount"`
+	Currency string  `json:"currency" yaml:"currency"`
+	External bool    `json:"external" yaml:"external"`
+	ReadOnly bool    `json:"readonly" yaml:"readonly"`
+}
+
+type CatalogOfCosts struct {
+	Catalog []*Cost `json:"costs" yaml:"costs"`
 }
 
 func (cba *CBA) NewCost() *Cost {
-	return  &Cost{
-		Name: "",
-		Metric: COST_METRIC_ONCE,
-		Type: COST_TYPE_INVESTMENT,
-		Amount: 0.0,
+	return &Cost{
+		Name:     "",
+		Metric:   COST_METRIC_ONCE,
+		Type:     COST_TYPE_INVESTMENT,
+		Amount:   0.0,
 		Currency: CURRENCY_EURO,
-		Tags: []string{},
 		External: true,
+		ReadOnly: false,
 	}
 }
 

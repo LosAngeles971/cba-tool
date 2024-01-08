@@ -11,6 +11,9 @@ import (
 //go:embed example.yaml
 var example []byte
 
+//go:embed common_costs.yaml
+var catalog []byte
+
 const (
 	CURRENCY_EURO          = "euro"
 	CURRENCY_DOLLAR        = "dollar"
@@ -44,7 +47,9 @@ func NewCBA() *CBA {
 		ValueAddedTax: 0,
 		VAT:           false,
 	}
+	// TEMPORARY PRE-LOAD
 	cba.Load(example)
+	cba.LoadCostsFromCatalog(catalog)
 	return cba
 }
 
@@ -64,8 +69,32 @@ func (cba *CBA) Load(data []byte) {
 
 func (cba *CBA) LoadFile(path string) error {
 	data, err := os.ReadFile(path)
-	if err != nil {
+	if err == nil {
 		cba.Load(data)
 	}
 	return err
+}
+
+func (cba *CBA) LoadCostsFromCatalog(data []byte) error {
+	cc := CatalogOfCosts{}
+	err := yaml.Unmarshal(data, &cc)
+	if err != nil {
+		return err
+	}
+	for _, c := range cc.Catalog {
+		c.ReadOnly = true
+		e := cba.FindCostByName(c.Name)
+		if e == nil {
+			cba.Costs = append(cba.Costs, c)
+		}
+	}
+	return nil
+}
+
+func (cba *CBA) LoadCostsFromCatalogFile(path string) error {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return err
+	}
+	return cba.LoadCostsFromCatalog(data)
 }

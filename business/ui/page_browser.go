@@ -16,7 +16,7 @@ func (a *CBAToolApp) callBrowserPage() {
 	root := tview.NewTreeNode(currentDir).SetColor(tcell.ColorRed)
 	tree := tview.NewTreeView().SetRoot(root).SetCurrentNode(root)
 
-	// A helper function which adds the files and directories of the given path 
+	// A helper function which adds the files and directories of the given path
 	// to the given target node.
 	add := func(target *tview.TreeNode, path string) {
 		files, err := ioutil.ReadDir(path)
@@ -44,7 +44,7 @@ func (a *CBAToolApp) callBrowserPage() {
 		path := reference.(string)
 		info, err := os.Stat(path)
 		if err != nil {
-			return 
+			return
 		}
 		if info.IsDir() {
 			children := node.GetChildren()
@@ -58,7 +58,7 @@ func (a *CBAToolApp) callBrowserPage() {
 		} else {
 			err := a.Data.LoadFile(path)
 			if err != nil {
-				a.callErrorMessage(err)
+				a.callMessage("Not valid file", err, a.callMenuPage)
 			} else {
 				a.callMenuPage()
 			}

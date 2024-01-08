@@ -13,31 +13,22 @@
       days: 365
   costs:
     - name: VMware vSphere stack License
-      description: Virtualization suite of VMware - yearly cost per user
       type: investment
       metric: yearly
       amount: 270
       currency: euro
-      tags:
-        - Software
       external: true
     - name: Server Dell high-end
-      description: Server per virtualization suite of VMware - fixed cost per 1 server
       type: investment
       metric: once
       amount: 15000
       currency: euro
-      tags:
-        - Hardware
       external: true
     - name: Internal FTE expert role
-      description: Internal FTE expert role
       type: labor
       metric: yearly
       amount: 100000
       currency: euro
-      tags:
-        - Internal
       external: false
   allocations:
     - id: "0.0"
