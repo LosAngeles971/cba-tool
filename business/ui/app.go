@@ -15,8 +15,8 @@ import (
 )
 
 type CBAToolApp struct {
-	Data            *cba.CBA
-	app             *tview.Application
+	Data *cba.CBA
+	app  *tview.Application
 }
 
 func (a *CBAToolApp) eventHandler(eventKey *tcell.EventKey) *tcell.EventKey {

@@ -1,6 +1,6 @@
 package ui
 
-import(
+import (
 	_ "embed"
 
 	"github.com/rivo/tview"
@@ -8,6 +8,7 @@ import(
 
 //go:embed about.txt
 var about_text string
+
 //go:embed help.txt
 var help_text string
 
@@ -53,5 +54,6 @@ func (a *CBAToolApp) callMenuPage() {
 	})
 	flex.AddItem(mainMenu, 0, 1, true)
 	flex.AddItem(help, 0, 3, false)
-	a.app.SetRoot(flex, true)
+	//a.app.SetRoot(flex, true)
+	a.callPage(flex)
 }

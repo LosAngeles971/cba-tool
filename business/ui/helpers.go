@@ -4,8 +4,17 @@ import (
 	"strconv"
 
 	"github.com/LosAngeles971/cba-tool/business/cba"
+	"github.com/gdamore/tcell/v2"
 	"github.com/rivo/tview"
 )
+
+func (a *CBAToolApp) callPage(content tview.Primitive) {
+	f := tview.NewFrame(content)
+	f.SetBorders(2, 2, 1, 1, 1, 1)
+	f.AddText("Cost-Benefit Analysis tool - 2024 - @LosAngeles971", true, tview.AlignLeft, tcell.ColorBlueViolet)
+	f.AddText("Press (ESC) key to have the main menù", false, tview.AlignCenter, tcell.ColorGreen)
+	a.app.SetRoot(f, true)
+}
 
 func getInteger(f *tview.InputField) int {
 	a, err := strconv.Atoi(f.GetText())
