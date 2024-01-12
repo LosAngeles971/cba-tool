@@ -15,7 +15,7 @@ func (a *CBAToolApp) callQuit() {
 			a.callMenuPage()
 		}
 	})
-	a.app.SetRoot(modal, true)
+	a.callPage(modal)
 }
 
 func (a *CBAToolApp) callMessage(message string, err error, callback func()) {

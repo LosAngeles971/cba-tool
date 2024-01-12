@@ -4,15 +4,16 @@ import (
 	"strconv"
 
 	"github.com/LosAngeles971/cba-tool/business/cba"
-	"github.com/gdamore/tcell/v2"
 	"github.com/rivo/tview"
 )
 
 func (a *CBAToolApp) callPage(content tview.Primitive) {
 	f := tview.NewFrame(content)
+	f.SetBorder(true)
+	f.SetBorderColor(t_colors[frame_border_color])
 	f.SetBorders(2, 2, 1, 1, 1, 1)
-	f.AddText("Cost-Benefit Analysis tool - 2024 - @LosAngeles971", true, tview.AlignLeft, tcell.ColorBlueViolet)
-	f.AddText("Press (ESC) key to have the main menù", false, tview.AlignCenter, tcell.ColorGreen)
+	f.AddText("Cost-Benefit Analysis tool - 2024 - @LosAngeles971", true, tview.AlignLeft, t_colors[frame_header_color])
+	f.AddText("Press (ESC) key to have the main menù", false, tview.AlignCenter, t_colors[frame_footer_color])
 	a.app.SetRoot(f, true)
 }
 

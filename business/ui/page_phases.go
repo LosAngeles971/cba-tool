@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/LosAngeles971/cba-tool/business/cba"
-	"github.com/gdamore/tcell/v2"
 	"github.com/rivo/tview"
 )
 
@@ -20,14 +19,14 @@ func (a *CBAToolApp) callPhasesPage() {
 		}
 	})
 	phasesPage.Clear()
-	phasesPage.SetCell(0, 0, tview.NewTableCell("Index").SetTextColor(tcell.ColorWhite).SetAlign(tview.AlignCenter))
-	phasesPage.SetCell(0, 1, tview.NewTableCell("Phase").SetTextColor(tcell.ColorWhite).SetAlign(tview.AlignCenter))
-	phasesPage.SetCell(0, 2, tview.NewTableCell("Days").SetTextColor(tcell.ColorWhite).SetAlign(tview.AlignCenter))
+	phasesPage.SetCell(0, 0, tview.NewTableCell("Index").SetTextColor(t_colors[table_header_color]).SetAlign(tview.AlignCenter))
+	phasesPage.SetCell(0, 1, tview.NewTableCell("Phase").SetTextColor(t_colors[table_header_color]).SetAlign(tview.AlignCenter))
+	phasesPage.SetCell(0, 2, tview.NewTableCell("Days").SetTextColor(t_colors[table_header_color]).SetAlign(tview.AlignCenter))
 	if a.Data != nil {
 		for i, cycle := range a.Data.Phases {
-			phasesPage.SetCell(i+1, 0, tview.NewTableCell(fmt.Sprint(cycle.Index)).SetTextColor(tcell.ColorWhite).SetAlign(tview.AlignCenter))
-			phasesPage.SetCell(i+1, 1, tview.NewTableCell(cycle.Name).SetTextColor(tcell.ColorWhite).SetAlign(tview.AlignCenter))
-			phasesPage.SetCell(i+1, 2, tview.NewTableCell(fmt.Sprint(cycle.Days)).SetTextColor(tcell.ColorWhite).SetAlign(tview.AlignCenter))
+			phasesPage.SetCell(i+1, 0, tview.NewTableCell(fmt.Sprint(cycle.Index)).SetTextColor(t_colors[table_cell_color]).SetAlign(tview.AlignCenter))
+			phasesPage.SetCell(i+1, 1, tview.NewTableCell(cycle.Name).SetTextColor(t_colors[table_cell_color]).SetAlign(tview.AlignCenter))
+			phasesPage.SetCell(i+1, 2, tview.NewTableCell(fmt.Sprint(cycle.Days)).SetTextColor(t_colors[table_cell_color]).SetAlign(tview.AlignCenter))
 		}
 	}
 	a.app.SetRoot(phasesPage, true)
@@ -39,7 +38,7 @@ func (a *CBAToolApp) getPhaseForm(phase *cba.Phase, update bool) *tview.Form {
 	form.AddInputField("Index", fmt.Sprint(phase.Index), 3, tview.InputFieldInteger, nil)
 	form.AddInputField("Days", fmt.Sprint(phase.Days), 10, tview.InputFieldInteger, nil)
 	form.AddButton("Add/Update", func() {
-		phase.Name =  form.GetFormItemByLabel("Name").(*tview.InputField).GetText()
+		phase.Name = form.GetFormItemByLabel("Name").(*tview.InputField).GetText()
 		phase.Index = getInteger(form.GetFormItemByLabel("Index").(*tview.InputField))
 		phase.Days = getInteger(form.GetFormItemByLabel("Days").(*tview.InputField))
 		if !update {

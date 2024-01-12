@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/LosAngeles971/cba-tool/business/cba"
-	"github.com/gdamore/tcell/v2"
 	"github.com/rivo/tview"
 )
 
@@ -20,19 +19,19 @@ func (a *CBAToolApp) callAllocationsPage() {
 		}
 	})
 	allocationsPage.Clear()
-	allocationsPage.SetCell(0, 0, tview.NewTableCell("Cost").SetTextColor(tcell.ColorWhite).SetAlign(tview.AlignCenter))
-	allocationsPage.SetCell(0, 1, tview.NewTableCell("Item occurrences").SetTextColor(tcell.ColorWhite).SetAlign(tview.AlignCenter))
-	allocationsPage.SetCell(0, 2, tview.NewTableCell("Allocated to").SetTextColor(tcell.ColorWhite).SetAlign(tview.AlignCenter))
-	allocationsPage.SetCell(0, 3, tview.NewTableCell("Applied discount").SetTextColor(tcell.ColorWhite).SetAlign(tview.AlignCenter))
+	allocationsPage.SetCell(0, 0, tview.NewTableCell("Cost").SetTextColor(t_colors[table_header_color]).SetAlign(tview.AlignCenter))
+	allocationsPage.SetCell(0, 1, tview.NewTableCell("Item occurrences").SetTextColor(t_colors[table_header_color]).SetAlign(tview.AlignCenter))
+	allocationsPage.SetCell(0, 2, tview.NewTableCell("Allocated to").SetTextColor(t_colors[table_header_color]).SetAlign(tview.AlignCenter))
+	allocationsPage.SetCell(0, 3, tview.NewTableCell("Applied discount").SetTextColor(t_colors[table_header_color]).SetAlign(tview.AlignCenter))
 	if a.Data == nil {
 		for i, alloc := range a.Data.Allocations {
-			allocationsPage.SetCell(i+1, 0, tview.NewTableCell(alloc.Cost).SetTextColor(tcell.ColorWhite).SetAlign(tview.AlignCenter))
-			allocationsPage.SetCell(i+1, 1, tview.NewTableCell(fmt.Sprint(alloc.Occurrence)).SetTextColor(tcell.ColorWhite).SetAlign(tview.AlignCenter))
-			allocationsPage.SetCell(i+1, 2, tview.NewTableCell(fmt.Sprint(alloc.Phase)).SetTextColor(tcell.ColorWhite).SetAlign(tview.AlignCenter))
-			allocationsPage.SetCell(i+1, 3, tview.NewTableCell(alloc.Discount).SetTextColor(tcell.ColorWhite).SetAlign(tview.AlignCenter))
+			allocationsPage.SetCell(i+1, 0, tview.NewTableCell(alloc.Cost).SetTextColor(t_colors[table_cell_color]).SetAlign(tview.AlignCenter))
+			allocationsPage.SetCell(i+1, 1, tview.NewTableCell(fmt.Sprint(alloc.Occurrence)).SetTextColor(t_colors[table_cell_color]).SetAlign(tview.AlignCenter))
+			allocationsPage.SetCell(i+1, 2, tview.NewTableCell(fmt.Sprint(alloc.Phase)).SetTextColor(t_colors[table_cell_color]).SetAlign(tview.AlignCenter))
+			allocationsPage.SetCell(i+1, 3, tview.NewTableCell(alloc.Discount).SetTextColor(t_colors[table_cell_color]).SetAlign(tview.AlignCenter))
 		}
 	}
-	a.app.SetRoot(allocationsPage, true)
+	a.callPage(allocationsPage)
 }
 
 func (a *CBAToolApp) getAllocationForm(alloc *cba.Allocation, update bool) *tview.Form {
